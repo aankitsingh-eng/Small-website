@@ -1,0 +1,6 @@
+FROM openjdk:17-slim
+WORKDIR /app
+COPY SimpleBackend.java .
+RUN javac SimpleBackend.java
+EXPOSE 8080
+CMD ["java", "SimpleBackend"]
