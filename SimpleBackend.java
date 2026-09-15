@@ -7,20 +7,24 @@ import java.net.InetSocketAddress;
 
 public class SimpleBackend {
     public static void main(String[] args) throws IOException {
-        // सर्वर पोर्ट 8080 पर चालू करें
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        // Cloud platform (Render) ke liye dynamic PORT set kiya gaya hai
+        String portEnv = System.getenv("PORT");
+        int port = (portEnv != null) ? Integer.parseInt(portEnv) : 8080;
 
-        // नए प्रोजेक्ट एंडपॉइंट्स
+        // Server ab sahi port par chalu hoga
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+
+        // Project endpoints
         server.createContext("/api/projects/ludo", new LudoProjectHandler());
         server.createContext("/api/projects/todo", new TodoListHandler());
 
         server.setExecutor(null);
         server.start();
-        System.out.println("Java Backend started on http://localhost:8080");
+        System.out.println("Java Backend started on port: " + port);
     }
 
-    // CORS और सामान्य हैंडलिंग के लिए उपयोगिता विधि
-    private static void setCORSHeaders(HttpExchange exchange) throws IOException {
+    // CORS Headers method (Frontend request block na ho uske liye)
+    private static void setCORSHeaders(HttpExchange exchange) {
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
@@ -79,4 +83,5 @@ public class SimpleBackend {
             os.close();
         }
     }
-}
+            }
+                
